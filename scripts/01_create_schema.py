@@ -101,16 +101,21 @@ ON page_views FOR SELECT
 TO anon, authenticated
 USING (true);
 
--- Create function for similarity search
+-- Replace the earlier two-argument version so PostgREST has one unambiguous RPC.
+DROP FUNCTION IF EXISTS match_sentences(vector(1536), int);
+
+-- Create function for similarity search, optionally limited to a speaker.
 CREATE OR REPLACE FUNCTION match_sentences(
   query_embedding vector(1536),
-  match_count int DEFAULT 20
+  match_count int DEFAULT 20,
+  speaker_filter text DEFAULT NULL
 )
 RETURNS TABLE (
   id uuid,
   talk_id uuid,
   title text,
   speaker text,
+  url text,
   text text,
   similarity float
 )
@@ -121,9 +126,11 @@ AS $$
     sentence_embeddings.talk_id,
     sentence_embeddings.title,
     sentence_embeddings.speaker,
+    sentence_embeddings.url,
     sentence_embeddings.text,
     1 - (sentence_embeddings.embedding <=> query_embedding) as similarity
   FROM sentence_embeddings
+  WHERE speaker_filter IS NULL OR speaker ILIKE '%' || speaker_filter || '%'
   ORDER BY sentence_embeddings.embedding <=> query_embedding
   LIMIT match_count;
 $$;

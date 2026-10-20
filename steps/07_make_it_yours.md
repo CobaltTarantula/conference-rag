@@ -24,6 +24,8 @@ Congratulations! You built a production-ready RAG application from scratch.
 
 **Make this app yours.** Add an interesting feature that demonstrates understanding of the system. If you need ideas:
 
+This project adds an optional speaker filter to RAG. It passes a speaker name to `match_sentences()`, so the database filters candidate sentences before ranking them by vector similarity. This makes it possible to ask a question about one speaker without sending irrelevant talks to the language model. Leave the field empty to search everyone.
+
 - **Ask a specific speaker**: Filter RAG answers to only use talks from a specific speaker
 - **Question history**: Store user questions and answers in a new Supabase table
 - **Embedding caching**: Cache question embeddings to avoid re-calling OpenAI for repeated questions

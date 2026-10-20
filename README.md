@@ -70,7 +70,9 @@ Your AI assistant will automatically read [`ai_agent_instructions.md`](ai_agent_
 |------|-------------|----------|
 | **🔍 Keyword Search** | SQL `ILIKE` query on talk text | Conference data imported |
 | **🧠 Semantic Search** | Vector similarity with pgvector | Embeddings + `embed-question` Edge Function |
-| **🤖 Ask a Question (RAG)** | AI-generated answers with sources | All Edge Functions deployed |
+| **🤖 Ask a Question (RAG)** | AI-generated answers with sources; optional speaker filter | All Edge Functions deployed |
+
+The RAG panel also supports an optional speaker filter. Enter all or part of a speaker's name to limit retrieval to talks by that speaker; leave it blank to search all talks.
 
 ## 📁 Project Structure
 
@@ -96,11 +98,11 @@ conference-rag/
 │   ├── 04_embed_data.py        # Generate embeddings → scripts/output/ (💰 saved to disk!)
 │   ├── 05_update_embeddings.py # Update DB with embeddings (🧠 semantic!)
 │   └── output/                 # Intermediate data files (git-ignored)
-└── supabase/                   # Edge Functions (YOU create this with supabase init)
-    └── functions/
+└── supabase/
+    └── functions/              # Authenticated Edge Functions
         ├── _shared/            # Shared auth & CORS helpers
         ├── embed-question/     # Converts questions to embeddings
-        └── generate-answer/    # Generates AI answers
+        └── generate-answer/    # Generates AI answers with sources
 ```
 
 ## 🔒 Security Model

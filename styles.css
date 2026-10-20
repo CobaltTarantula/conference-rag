@@ -526,6 +526,27 @@ input:focus {
     flex: 1;
 }
 
+.panel-input.rag-inputs input:first-child {
+    flex: 2;
+    min-width: 220px;
+}
+
+.panel-input.rag-inputs input:nth-child(2) {
+    flex: 1;
+    min-width: 170px;
+}
+
+@media (max-width: 640px) {
+    .panel-input.rag-inputs {
+        flex-wrap: wrap;
+    }
+
+    .panel-input.rag-inputs input:first-child,
+    .panel-input.rag-inputs input:nth-child(2) {
+        flex-basis: 100%;
+    }
+}
+
 .panel-input input:disabled,
 .panel-input button:disabled {
     opacity: 0.4;

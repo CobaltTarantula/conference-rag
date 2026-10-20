@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supabase RAG - Conference Q&A</title>
+    <title>Conference Talk Explorer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -123,11 +123,13 @@
                         <h3>🤖 Ask a Question (RAG)</h3>
                         <span class="status-badge not-ready" id="rag-status">🔴 Not Ready</span>
                     </div>
-                    <p class="panel-description">Get AI-generated answers based on conference talks. Requires all Edge
-                        Functions deployed.</p>
-                    <div class="panel-input">
+                    <p class="panel-description">Get AI-generated answers based on conference talks. Optionally focus
+                        your answer on a speaker. Requires all Edge Functions deployed.</p>
+                    <div class="panel-input rag-inputs">
                         <input type="text" id="rag-input" placeholder="Ask a question about conference talks..."
-                            autocomplete="off" disabled />
+                            autocomplete="off" aria-label="Question about conference talks" disabled />
+                        <input type="text" id="rag-speaker-filter" placeholder="Speaker filter (optional)"
+                            autocomplete="off" aria-label="Optional speaker name filter" disabled />
                         <button id="rag-btn" class="btn-primary" disabled>Ask</button>
                     </div>
                     <div class="search-results" id="rag-results"></div>

@@ -80,6 +80,7 @@ const semanticResults = document.getElementById('semantic-results');
 const semanticStatus = document.getElementById('semantic-status');
 
 const ragInput = document.getElementById('rag-input');
+const ragSpeakerFilter = document.getElementById('rag-speaker-filter');
 const ragBtn = document.getElementById('rag-btn');
 const ragResults = document.getElementById('rag-results');
 const ragStatus = document.getElementById('rag-status');
@@ -390,6 +391,7 @@ function setSearchReady(type, ready) {
     }
 
     if (inputEl) inputEl.disabled = !ready;
+    if (type === 'rag' && ragSpeakerFilter) ragSpeakerFilter.disabled = !ready;
     if (btnEl) btnEl.disabled = !ready;
 
     if (panelEl) {
@@ -521,6 +523,7 @@ async function semanticSearch() {
 
 async function askQuestion() {
     const question = ragInput ? ragInput.value.trim() : '';
+    const speakerFilter = ragSpeakerFilter ? ragSpeakerFilter.value.trim() : '';
     if (!question || !supabaseClient) return;
 
     showLoading(true);
@@ -531,10 +534,15 @@ async function askQuestion() {
         const embedding = await getEmbedding(question);
 
         // Step 2: Search for similar sentences
-        const results = await searchSentences(embedding);
+        const results = await searchSentences(embedding, speakerFilter);
 
         // Step 3: Group by talk (with similarity scores and URLs)
         const topTalks = groupByTalk(results);
+
+        if (!topTalks.length) {
+            showResults('rag', '<div class="no-results">No matching talks found. Try a different question or speaker name.</div>');
+            return;
+        }
 
         // Step 4: Fetch full talk text for richer context
         const enrichedTalks = await fetchFullTalkText(topTalks);
@@ -597,12 +605,13 @@ async function getEmbedding(text) {
 }
 
 // Search sentences using vector similarity
-async function searchSentences(embedding) {
+async function searchSentences(embedding, speakerFilter = '') {
     if (!supabaseClient) throw new Error('Supabase not configured');
 
     const { data, error } = await supabaseClient.rpc('match_sentences', {
         query_embedding: embedding,
-        match_count: 20
+        match_count: speakerFilter ? 40 : 20,
+        speaker_filter: speakerFilter || null
     });
 
     if (error) throw new Error(`Database search failed: ${error.message}`);
